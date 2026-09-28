@@ -1,0 +1,8 @@
+**/bin/
+**/obj/
+work/
+*.user
+*.demo
+*.demo.part
+*.demo.json
+publish/

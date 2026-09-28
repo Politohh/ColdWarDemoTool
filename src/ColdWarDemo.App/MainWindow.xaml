@@ -1,0 +1,150 @@
+<Window x:Class="ColdWarDemo.App.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:shell="clr-namespace:System.Windows.Shell;assembly=PresentationFramework"
+        Title="Cold War Demo Tool" Icon="Assets/app.ico" Width="1120" Height="800" MinWidth="1000" MinHeight="730"
+        Background="{StaticResource Bg}" Foreground="{StaticResource Text}" FontFamily="Segoe UI"
+        WindowStartupLocation="CenterScreen" WindowStyle="None" ResizeMode="CanResize" Closing="Window_Closing">
+  <shell:WindowChrome.WindowChrome>
+    <shell:WindowChrome CaptionHeight="0" ResizeBorderThickness="6" GlassFrameThickness="0" CornerRadius="12"/>
+  </shell:WindowChrome.WindowChrome>
+  <Border x:Name="Root" BorderBrush="{StaticResource Line}" BorderThickness="1" Background="{StaticResource Bg}" Padding="28,0,28,22">
+    <Grid>
+      <Grid.RowDefinitions>
+        <RowDefinition Height="92"/><RowDefinition Height="128"/><RowDefinition Height="18"/>
+        <RowDefinition Height="*"/><RowDefinition Height="18"/><RowDefinition Height="100"/><RowDefinition Height="46"/>
+      </Grid.RowDefinitions>
+      <Grid Grid.Row="0" MouseLeftButtonDown="Header_MouseLeftButtonDown" Background="Transparent">
+        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+          <Image Source="Assets/logo.png" Width="58" Height="58" Margin="0,0,16,0"/>
+          <StackPanel VerticalAlignment="Center">
+          <StackPanel Orientation="Horizontal">
+            <TextBlock Text="COLD WAR" FontSize="12" FontWeight="Bold" Foreground="{StaticResource Accent}" Margin="0,0,12,0"/>
+            <TextBlock Text="REPLAY UTILITY" FontSize="12" Foreground="{StaticResource Muted}"/>
+          </StackPanel>
+          <TextBlock Text="Demo Tool" FontSize="29" FontWeight="SemiBold" Margin="0,3,0,0"/>
+          </StackPanel>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,14,0,0">
+          <TextBlock Text="v0.1.0" Foreground="{StaticResource Muted}" FontSize="12" VerticalAlignment="Center" Margin="0,0,18,0"/>
+          <Button Content="−" Padding="12,4" Background="Transparent" BorderThickness="0" Click="Minimize_Click" ToolTip="Minimize"/>
+          <Button Content="×" Padding="12,4" Background="Transparent" BorderThickness="0" Click="Close_Click" ToolTip="Close"/>
+        </StackPanel>
+      </Grid>
+      <Border Grid.Row="1" Background="{StaticResource Surface}" BorderBrush="{StaticResource Line}" BorderThickness="1" CornerRadius="12" Padding="20,16">
+        <Grid>
+          <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="12"/><RowDefinition Height="*"/></Grid.RowDefinitions>
+          <StackPanel>
+            <TextBlock Text="Load a replay in Theater" FontSize="16" FontWeight="SemiBold"/>
+            <TextBlock Text="Pause it, select the running game, then find its loaded demos." Style="{StaticResource Caption}" Margin="0,4,0,0"/>
+          </StackPanel>
+          <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+            <ComboBox x:Name="ProcessPicker" Grid.Column="0" MinWidth="220" VerticalAlignment="Center"/>
+            <Button x:Name="RefreshButton" Grid.Column="1" Content="Refresh" Click="Refresh_Click" Margin="10,0,0,0" VerticalAlignment="Center"/>
+            <Button x:Name="FindButton" Grid.Column="2" Content="Find loaded demos" Style="{StaticResource Primary}" Click="Find_Click" Margin="10,0,0,0" VerticalAlignment="Center"/>
+            <Button x:Name="CancelButton" Grid.Column="3" Content="Stop search" Click="Cancel_Click" Margin="10,0,0,0" Visibility="Collapsed" VerticalAlignment="Center"/>
+            <Button x:Name="OpenButton" Grid.Column="4" Content="Open .demo" Click="Open_Click" Margin="10,0,0,0" VerticalAlignment="Center"/>
+          </Grid>
+        </Grid>
+      </Border>
+      <Grid Grid.Row="3">
+        <Grid.ColumnDefinitions><ColumnDefinition Width="300"/><ColumnDefinition Width="18"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+        <Border Grid.Column="0" Background="{StaticResource Surface}" BorderBrush="{StaticResource Line}" BorderThickness="1" CornerRadius="12" Padding="14">
+          <Grid>
+            <Grid.RowDefinitions><RowDefinition Height="28"/><RowDefinition Height="*"/></Grid.RowDefinitions>
+            <TextBlock x:Name="ListHeading" Text="DEMOS" Style="{StaticResource Caption}" FontWeight="SemiBold" Margin="6,0,0,0"/>
+            <ListBox x:Name="ReplayList" Grid.Row="1" Background="Transparent" BorderThickness="0" SelectionChanged="ReplayList_SelectionChanged"
+                     ScrollViewer.HorizontalScrollBarVisibility="Disabled" Foreground="{StaticResource Text}">
+              <ListBox.ItemContainerStyle>
+                <Style TargetType="ListBoxItem">
+                  <Setter Property="Padding" Value="0"/><Setter Property="Margin" Value="0,0,0,8"/>
+                  <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                  <Setter Property="Template">
+                    <Setter.Value>
+                      <ControlTemplate TargetType="ListBoxItem">
+                        <Border x:Name="Selection" Background="#141B26" BorderBrush="{StaticResource Line}" BorderThickness="1" CornerRadius="8" Padding="14,12">
+                          <ContentPresenter/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                          <Trigger Property="IsSelected" Value="True"><Setter TargetName="Selection" Property="BorderBrush" Value="{StaticResource Accent}"/><Setter TargetName="Selection" Property="Background" Value="#29313D"/></Trigger>
+                          <Trigger Property="IsMouseOver" Value="True"><Setter TargetName="Selection" Property="Background" Value="#253043"/></Trigger>
+                        </ControlTemplate.Triggers>
+                      </ControlTemplate>
+                    </Setter.Value>
+                  </Setter>
+                </Style>
+              </ListBox.ItemContainerStyle>
+              <ListBox.ItemTemplate>
+                <DataTemplate>
+                  <StackPanel>
+                    <TextBlock Text="{Binding Title}" FontSize="16" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/>
+                    <TextBlock Text="{Binding Subtitle}" Foreground="{StaticResource Muted}" FontSize="12" Margin="0,4,0,0"/>
+                    <TextBlock Text="{Binding RecordedLabel}" Foreground="{StaticResource Muted}" FontSize="11" Margin="0,8,0,0"/>
+                  </StackPanel>
+                </DataTemplate>
+              </ListBox.ItemTemplate>
+            </ListBox>
+            <StackPanel x:Name="ListEmpty" Grid.Row="1" VerticalAlignment="Center" Margin="16,0">
+              <TextBlock Text="No demos yet" FontSize="16" FontWeight="SemiBold"/>
+              <TextBlock Text="Find a loaded replay or open a saved .demo file." Foreground="{StaticResource Muted}" TextWrapping="Wrap" Margin="0,8,0,0"/>
+            </StackPanel>
+          </Grid>
+        </Border>
+        <Border Grid.Column="2" Background="{StaticResource Surface}" BorderBrush="{StaticResource Line}" BorderThickness="1" CornerRadius="12" Padding="24">
+          <Grid>
+            <StackPanel x:Name="DetailEmpty" VerticalAlignment="Center" HorizontalAlignment="Center" MaxWidth="360">
+              <TextBlock Text="▷" FontSize="58" Foreground="{StaticResource Accent}" HorizontalAlignment="Center"/>
+              <TextBlock Text="Keep a copy of your replay" FontSize="23" FontWeight="SemiBold" HorizontalAlignment="Center" Margin="0,10,0,0"/>
+              <TextBlock Text="Select a demo to see its map, recording date, and duration before saving." Foreground="{StaticResource Muted}" TextAlignment="Center" TextWrapping="Wrap" Margin="0,12,0,0"/>
+            </StackPanel>
+            <Grid x:Name="DetailPanel" Visibility="Collapsed">
+              <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="18"/><RowDefinition Height="Auto"/><RowDefinition Height="16"/><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+              <StackPanel>
+                <TextBlock x:Name="MapLabel" FontSize="29" FontWeight="SemiBold"/>
+                <TextBlock x:Name="ModeLabel" Foreground="{StaticResource Accent}" FontSize="15" Margin="0,5,0,0"/>
+              </StackPanel>
+              <UniformGrid Grid.Row="2" Columns="2" Rows="2">
+                <StackPanel Margin="0,0,12,16"><TextBlock Text="RECORDED" Style="{StaticResource Caption}"/><TextBlock x:Name="DateLabel" FontSize="15" Margin="0,6,0,0"/></StackPanel>
+                <StackPanel Margin="0,0,0,16"><TextBlock Text="DURATION" Style="{StaticResource Caption}"/><TextBlock x:Name="DurationLabel" FontSize="23" FontWeight="SemiBold" Margin="0,2,0,0"/></StackPanel>
+                <StackPanel><TextBlock Text="FILE SIZE" Style="{StaticResource Caption}"/><TextBlock x:Name="SizeLabel" FontSize="17" Margin="0,6,0,0"/></StackPanel>
+                <StackPanel><TextBlock Text="DATA VERSION" Style="{StaticResource Caption}"/><TextBlock x:Name="VersionLabel" FontSize="17" Margin="0,6,0,0"/></StackPanel>
+              </UniformGrid>
+              <Border Grid.Row="4" Background="#1B332E" BorderBrush="#315B4B" BorderThickness="1" CornerRadius="8" Padding="12,10">
+                <TextBlock Text="✓  Structure and compressed blocks validated" Foreground="#B8DFC9" FontSize="12" TextWrapping="Wrap"/>
+              </Border>
+              <StackPanel Grid.Row="6" Margin="0,14,0,0">
+                <TextBlock x:Name="SourceLabel" Foreground="{StaticResource Muted}" FontSize="12"/>
+                <TextBlock x:Name="SourceHint" Foreground="{StaticResource Muted}" FontSize="11" Margin="0,5,0,0"/>
+                <Button x:Name="DetailsButton" Content="Copy technical details" Click="Details_Click" HorizontalAlignment="Left" Padding="10,6" Margin="0,12,0,0" FontSize="11"/>
+              </StackPanel>
+            </Grid>
+          </Grid>
+        </Border>
+      </Grid>
+      <Border Grid.Row="5" Background="{StaticResource Surface}" BorderBrush="{StaticResource Line}" BorderThickness="1" CornerRadius="12" Padding="16,12">
+        <Grid>
+          <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="8"/><RowDefinition Height="*"/></Grid.RowDefinitions>
+          <Grid><TextBlock Text="SAVE LOCATION" Style="{StaticResource Caption}" FontWeight="SemiBold"/>
+            <CheckBox x:Name="MetadataCheck" Content="Include metadata (.json)" IsChecked="True" HorizontalAlignment="Right"/>
+          </Grid>
+          <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+            <TextBox x:Name="FolderBox" Grid.Column="0" IsReadOnly="True" VerticalAlignment="Center"/>
+            <Button x:Name="BrowseButton" Grid.Column="1" Content="Browse" Click="Browse_Click" Margin="10,0,0,0" VerticalAlignment="Center"/>
+            <Button x:Name="ShowFolderButton" Grid.Column="2" Content="Open folder" Click="ShowFolder_Click" Margin="10,0,0,0" VerticalAlignment="Center"/>
+            <Button x:Name="SaveButton" Grid.Column="3" Content="Save selected demo" Style="{StaticResource Primary}" Click="Save_Click" Margin="10,0,0,0" IsEnabled="False" VerticalAlignment="Center"/>
+          </Grid>
+        </Grid>
+      </Border>
+      <Grid Grid.Row="6" Margin="2,12,2,0">
+        <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="210"/></Grid.ColumnDefinitions>
+        <TextBlock x:Name="StatusLabel" Text="Ready. Load a Theater replay or open a .demo." Foreground="{StaticResource Muted}" FontSize="12" TextTrimming="CharacterEllipsis" VerticalAlignment="Center"/>
+        <StackPanel Grid.Column="1" VerticalAlignment="Center">
+          <TextBlock x:Name="ReadOnlyLabel" Text="EXTERNAL READS ONLY" Foreground="{StaticResource Muted}" FontSize="10" TextAlignment="Right"/>
+          <ProgressBar x:Name="SearchProgress" Height="3" Margin="0,6,0,0" Foreground="{StaticResource Accent}" Background="{StaticResource Line}" BorderThickness="0" Visibility="Collapsed"/>
+        </StackPanel>
+      </Grid>
+    </Grid>
+  </Border>
+</Window>
