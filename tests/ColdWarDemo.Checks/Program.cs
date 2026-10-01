@@ -39,6 +39,11 @@ Check("Retail format version retained", slums.Metadata.DataVersion == 449);
 Check("Retail three expanded blocks", slums.Metadata.InitialStateBytes == 1018027 && slums.Metadata.InitialAuxiliaryBytes == 3261 && slums.Metadata.FooterStateBytes == 6573);
 int initialEnd = 8;
 for (int i = 0; i < 2; i++) initialEnd = checked(initialEnd + 8 + (int)DemoFormat.Word(slums.Data, initialEnd));
+int frameEnd = slums.Data.Length - 8 - (int)DemoFormat.Word(slums.Data, slums.Data.Length - 8);
+byte[] changedFrame = (byte[])slums.Data.Clone();
+changedFrame[initialEnd + 2048] ^= 0x5A;
+DemoMetadata changedFrameMetadata = DemoFormat.Parse(changedFrame);
+Check("Frame bytes are outside structural validation", changedFrameMetadata.Map == slums.Metadata.Map && changedFrameMetadata.Sha256 != slums.Metadata.Sha256 && frameEnd > initialEnd + 2048);
 foreach (int cut in new[] { 0, 15, 59, 100, initialEnd - 1, initialEnd, slums.Data.Length - 9, slums.Data.Length - 1 })
     MustReject("Reject truncated demo at " + cut, slums.Data.AsSpan(0, cut));
 foreach (int position in new[] { 0, 8, 12, slums.Data.Length - 8, slums.Data.Length - 4 })
@@ -59,6 +64,7 @@ string secondSave = DemoStorage.Save(slums, folder, includeMetadata: true).Path;
 Check("Save preserves bytes", Convert.ToHexStringLower(SHA256.HashData(File.ReadAllBytes(firstSave))) == slums.Metadata.Sha256);
 Check("Repeated save never overwrites", firstSave != secondSave && File.Exists(firstSave) && File.Exists(secondSave));
 Check("Save creates parseable details", JsonDocument.Parse(File.ReadAllText(firstSave + ".json")).RootElement.GetProperty("validation").GetProperty("lz4Blocks").GetBoolean());
+Check("Sidecar does not claim safe playback", !JsonDocument.Parse(File.ReadAllText(firstSave + ".json")).RootElement.GetProperty("validation").GetProperty("gamePlaybackSafetyVerified").GetBoolean());
 Check("Saved copy reopens", DemoStorage.Open(secondSave).Metadata == slums.Metadata);
 string orphanFolder = Path.Combine(folder, "existing-metadata");
 Directory.CreateDirectory(orphanFolder);

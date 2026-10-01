@@ -203,11 +203,12 @@ public static class DemoStorage
             {
                 var details = new
                 {
-                    tool = "Cold War Demo Tool", version = "0.1.0", file = Path.GetFileName(path),
+                    tool = "Cold War Demo Tool", version = "0.1.1", file = Path.GetFileName(path),
                     metadata = demo.Metadata, source = demo.Source,
                     validation = new { structure = true, lz4Blocks = true,
                         stableAcrossTwoReads = demo.Source is not null,
-                        nativeChecksumVerified = false, fullFrameStreamParsed = false },
+                        nativeChecksumVerified = false, fullFrameStreamParsed = false,
+                        gamePlaybackSafetyVerified = false },
                     captureMethod = "External memory reads only; no hooks, injection, remote writes, or debugger attach."
                 };
                 string detailsPath = path + ".json";

@@ -26,7 +26,7 @@
           </StackPanel>
         </StackPanel>
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,14,0,0">
-          <TextBlock Text="v0.1.0" Foreground="{StaticResource Muted}" FontSize="12" VerticalAlignment="Center" Margin="0,0,18,0"/>
+          <TextBlock Text="v0.1.1" Foreground="{StaticResource Muted}" FontSize="12" VerticalAlignment="Center" Margin="0,0,18,0"/>
           <Button Content="−" Padding="12,4" Background="Transparent" BorderThickness="0" Click="Minimize_Click" ToolTip="Minimize"/>
           <Button Content="×" Padding="12,4" Background="Transparent" BorderThickness="0" Click="Close_Click" ToolTip="Close"/>
         </StackPanel>
@@ -98,27 +98,29 @@
               <TextBlock Text="Keep a copy of your replay" FontSize="23" FontWeight="SemiBold" HorizontalAlignment="Center" Margin="0,10,0,0"/>
               <TextBlock Text="Select a demo to see its map, recording date, and duration before saving." Foreground="{StaticResource Muted}" TextAlignment="Center" TextWrapping="Wrap" Margin="0,12,0,0"/>
             </StackPanel>
-            <Grid x:Name="DetailPanel" Visibility="Collapsed">
+            <ScrollViewer x:Name="DetailPanel" Visibility="Collapsed" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+            <Grid>
               <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="18"/><RowDefinition Height="Auto"/><RowDefinition Height="16"/><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
               <StackPanel>
                 <TextBlock x:Name="MapLabel" FontSize="29" FontWeight="SemiBold"/>
                 <TextBlock x:Name="ModeLabel" Foreground="{StaticResource Accent}" FontSize="15" Margin="0,5,0,0"/>
               </StackPanel>
               <UniformGrid Grid.Row="2" Columns="2" Rows="2">
-                <StackPanel Margin="0,0,12,16"><TextBlock Text="RECORDED" Style="{StaticResource Caption}"/><TextBlock x:Name="DateLabel" FontSize="15" Margin="0,6,0,0"/></StackPanel>
-                <StackPanel Margin="0,0,0,16"><TextBlock Text="DURATION" Style="{StaticResource Caption}"/><TextBlock x:Name="DurationLabel" FontSize="23" FontWeight="SemiBold" Margin="0,2,0,0"/></StackPanel>
+                <StackPanel Margin="0,0,12,0"><TextBlock Text="RECORDED" Style="{StaticResource Caption}"/><TextBlock x:Name="DateLabel" FontSize="15" Margin="0,6,0,0"/></StackPanel>
+                <StackPanel><TextBlock Text="DURATION" Style="{StaticResource Caption}"/><TextBlock x:Name="DurationLabel" FontSize="23" FontWeight="SemiBold" Margin="0,2,0,0"/></StackPanel>
                 <StackPanel><TextBlock Text="FILE SIZE" Style="{StaticResource Caption}"/><TextBlock x:Name="SizeLabel" FontSize="17" Margin="0,6,0,0"/></StackPanel>
                 <StackPanel><TextBlock Text="DATA VERSION" Style="{StaticResource Caption}"/><TextBlock x:Name="VersionLabel" FontSize="17" Margin="0,6,0,0"/></StackPanel>
               </UniformGrid>
               <Border Grid.Row="4" Background="#1B332E" BorderBrush="#315B4B" BorderThickness="1" CornerRadius="8" Padding="12,10">
-                <TextBlock Text="✓  Structure and compressed blocks validated" Foreground="#B8DFC9" FontSize="12" TextWrapping="Wrap"/>
+                <TextBlock Text="✓  Container and compressed blocks checked; replay frames unchecked" Foreground="#B8DFC9" FontSize="12" TextWrapping="Wrap"/>
               </Border>
-              <StackPanel Grid.Row="6" Margin="0,14,0,0">
+              <StackPanel Grid.Row="6" Margin="0,8,0,0">
                 <TextBlock x:Name="SourceLabel" Foreground="{StaticResource Muted}" FontSize="12"/>
                 <TextBlock x:Name="SourceHint" Foreground="{StaticResource Muted}" FontSize="11" Margin="0,5,0,0"/>
-                <Button x:Name="DetailsButton" Content="Copy technical details" Click="Details_Click" HorizontalAlignment="Left" Padding="10,6" Margin="0,12,0,0" FontSize="11"/>
+                <Button x:Name="DetailsButton" Content="Copy technical details" Click="Details_Click" HorizontalAlignment="Left" Padding="10,6" Margin="0,4,0,0" FontSize="11"/>
               </StackPanel>
             </Grid>
+            </ScrollViewer>
           </Grid>
         </Border>
       </Grid>

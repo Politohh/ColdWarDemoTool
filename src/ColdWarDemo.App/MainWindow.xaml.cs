@@ -113,7 +113,9 @@ public partial class MainWindow : Window
         SizeLabel.Text = demo.Metadata.DisplaySize;
         VersionLabel.Text = demo.Metadata.DataVersion.ToString();
         SourceLabel.Text = demo.SourceLabel;
-        SourceHint.Text = demo.Source is not null ? "Two identical external reads. No hooks or game writes." : "Original file unchanged. Save creates a separate copy.";
+        SourceHint.Text = demo.Source is not null
+            ? "Two matching reads; no hooks or writes. Safe game playback is not verified."
+            : "Original file unchanged. Safe game playback is not verified.";
     }
 
     public async Task OpenDemoAsync(string path)
@@ -126,7 +128,7 @@ public partial class MainWindow : Window
             CapturedDemo demo = await Task.Run(() => DemoStorage.Open(path));
             AddDemo(demo);
             ReplayList.SelectedItem = demos.First(d => d.Metadata.Sha256 == demo.Metadata.Sha256);
-            Status($"Opened {Path.GetFileName(path)} · structure and compressed blocks validated.");
+            Status($"Opened {Path.GetFileName(path)} · container and compressed blocks checked; replay frames unchecked.");
         }
         catch (Exception ex) { ReportError(ex); }
         finally { SetBusy(false); }
@@ -184,8 +186,8 @@ public partial class MainWindow : Window
         if (ReplayList.SelectedItem is not CapturedDemo demo) return;
         Clipboard.SetText(JsonSerializer.Serialize(new
         {
-            tool = "Cold War Demo Tool 0.1.0", metadata = demo.Metadata, source = demo.Source,
-            validations = "Native envelope and all three LZ4 blocks checked. Native checksum and full frame interpretation not checked.",
+            tool = "Cold War Demo Tool 0.1.1", metadata = demo.Metadata, source = demo.Source,
+            validations = "Native envelope and all three LZ4 blocks checked. Native checksum, replay frames, and game playback safety not verified.",
             capture = "External read-only process handle. No hooks, injection, remote writes, or debugger attach."
         }, new JsonSerializerOptions { WriteIndented = true }));
         Status("Technical details copied.");

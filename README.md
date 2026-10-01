@@ -12,6 +12,8 @@ Capture loaded Black Ops Cold War Theater replays as native `.demo` files.
 
 You can also open existing `.demo` files to inspect their details. External reads only; no hooks or game writes.
 
+**Security:** Developed with AI assistance. The app checks the demo container and compressed blocks, not every replay frame or safety when the game plays it. Treat `.demo` files, including Theater downloads, as untrusted.
+
 **Account testing:** Tested on my main Battle.net account, with no ban observed during testing. This is my experience, not a guarantee against future bans.
 
 Build from source: `./build.ps1` with the .NET 10 SDK.
